@@ -353,7 +353,6 @@ public class ParseData {
 		
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.setSerializationInclusion(Include.NON_NULL);
-//		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 		JsonNode node = mapper.readTree(reader);
 		TypeFactory typeFactory = mapper.getTypeFactory();
 		GiveAPI checkResults = mapper.readValue(node.get("give-api").toString(), GiveAPI.class);
@@ -381,7 +380,6 @@ public class ParseData {
 		
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.setSerializationInclusion(Include.NON_NULL);
-//		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 		JsonNode node = mapper.readTree(reader);
 		TypeFactory typeFactory = mapper.getTypeFactory();
 		GiveAPI checkResults = mapper.readValue(node.get("give-api").toString(), GiveAPI.class);
@@ -403,7 +401,6 @@ public class ParseData {
 	 */
 	public static List<ProvState> getProvState(String token, String country) throws IOException{
 		verifyToken(token);
-//		String url = "https://app.place2give.com/Service.svc/give-api?action=getProvState&token=5d24ce6f-0264-44cd-804d-d2cda34b3577&Country=US&format=json";
 		String url = "https://app.place2give.com/Service.svc/give-api?action=getProvState&token="+token+"&Country="+country+"&format=json";
 		String reader = readURL_GET(url);
 		List<ProvState> details = null;
@@ -474,7 +471,6 @@ public class ParseData {
 		
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.setSerializationInclusion(Include.NON_NULL);
-//		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 		JsonNode node = mapper.readTree(reader);
 		TypeFactory typeFactory = mapper.getTypeFactory();
 		GiveAPI checkResults = mapper.readValue(node.get("give-api").toString(), GiveAPI.class);
@@ -593,7 +589,6 @@ public class ParseData {
 		
 		}
 		
-//		String url = "https://app.place2give.com/Service.svc/give-api?action=getDonationURL&token=5d24ce6f-0264-44cd-804d-d2cda34b3577&regNum=833678840RR0001&ProjectType=C&BackURL=www.google.com&RedirectURL=www.yahoo.com&Amount=10&Currency=CAD&FirstName=Mariam&LastName=Dost&Address=11Candle&City=Calgary&ProvState=AB&PostalZip=T23G&Country=CA&Email=mari@gmail.com&format=json";
 		String reader = readURL_GET(url);
 		DonationURL details = null ;
 
