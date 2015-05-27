@@ -425,7 +425,7 @@ public class ParseData {
 	}
 	
 	/**
-	 * Search charities that are active
+	 * Search charities that are active. Returns a list of type object-SearchCharities
 	 * Must enter values for token, page number, num per page.
 	 * Must enter one of the values for charity size, keyword, or charity type at least.
 	 * Entering values for country and provState are not necessary (but can be entered)
