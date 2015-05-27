@@ -98,7 +98,7 @@ public class ParseData {
 	 * @return String data
 	 * @throws IOException
 	 */
-	public static String readURL_POST(String url) throws IOException{
+	private static String readURL_POST(String url) throws IOException{
 		URL getURL = new URL(url);
 		HttpURLConnection connection =(HttpURLConnection) getURL.openConnection();
 		connection.setRequestMethod("POST");
@@ -146,7 +146,7 @@ public class ParseData {
 	 * @param String url
 	 * @return String data
 	 * */
-	public static String readURL_GET(String url) throws IOException{
+	private static String readURL_GET(String url) throws IOException{
 		URL getURL = new URL(url);
 		URLConnection connect = getURL.openConnection();
 		
@@ -177,7 +177,7 @@ public class ParseData {
 	 * @param String url
 	 * @return String data
 	 * */
-	public static InputStream openURL_GET(String url) throws IOException{
+	private static InputStream openURL_GET(String url) throws IOException{
 		URL getURL = new URL(url);
 		URLConnection connect = getURL.openConnection();
 		int status = ((HttpURLConnection) connect).getResponseCode();
@@ -198,7 +198,7 @@ public class ParseData {
 	 * @return InputStream
 	 * @throws IOException
 	 */
-	public static InputStream openURL_POST(String url) throws IOException{
+	private static InputStream openURL_POST(String url) throws IOException{
 		URL getURL = new URL(url);
 		HttpURLConnection connection =(HttpURLConnection) getURL.openConnection();
 		connection.setRequestMethod("POST");
@@ -483,9 +483,16 @@ public class ParseData {
 		JsonNode node = mapper.readTree(reader);
 		TypeFactory typeFactory = mapper.getTypeFactory();
 		GiveAPI checkResults = mapper.readValue(node.get("give-api").toString(), GiveAPI.class);
+		DataSearchCharity dsc = mapper.readValue(node.get("give-api").get("data").toString(), DataSearchCharity.class);
 		
-		if(checkResults.getStatus_code_description().equalsIgnoreCase("Success") || checkResults.getStatus_code().equals("100"))
+		if(checkResults.getStatus_code_description().equalsIgnoreCase("Success") || checkResults.getStatus_code().equals("100")){
 			details = mapper.readValue(node.get("give-api").get("data").get("charities").get("charity").toString(), typeFactory.constructCollectionType(List.class, SearchCharities.class));
+			for(SearchCharities i : details){
+				i.setTotalPages(dsc.getTotalPages());
+				i.setTotalResults(dsc.getTotalResults());
+				i.setOnPage(dsc.getOnPage());
+			}
+		}
 		else{
 			System.out.println(checkResults.getStatus_code_description());
 		}

@@ -1,9 +1,11 @@
 package com.parseData;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonAutoDetect
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class SearchCharities{
 	private String regNum;
 	private String Name;
@@ -17,6 +19,10 @@ public class SearchCharities{
 	private String LogoURL;
 	private String OperatingCountry;
 	private ContactInfoDetails ContactInfo;
+	
+	private int totalResults;
+	private int totalPages;
+	private int onPage;
 	
 	//setters
 	@JsonProperty("regNum")
@@ -79,6 +85,18 @@ public class SearchCharities{
 		this.ContactInfo = value;
 	}
 	
+	public void setTotalResults(int value){
+		this.totalResults = value;
+	}
+	
+	public void setTotalPages(int value){
+		this.totalPages = value;
+	}
+	
+	public void setOnPage(int value){
+		this.onPage = value;
+	}
+	
 	//getters
 	public String getregNum(){
 		return regNum;
@@ -126,6 +144,18 @@ public class SearchCharities{
 	
 	public ContactInfoDetails get(){
 		return ContactInfo;
+	}
+	
+	public int getTotalResults(){
+		return totalResults;
+	}
+	
+	public int getTotalPages(){
+		return totalPages;
+	}
+	
+	public int getOnPage(){
+		return onPage;
 	}
 	
 }
