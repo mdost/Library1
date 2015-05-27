@@ -29,4 +29,8 @@ public class DonationURL{
 	public String getExpires(){
 		return expires;
 	}
+	
+	public String toString(){
+		return "DonationURL: "+getDonationURL()+"\nExpires: "+getExpires();
+	}
 }

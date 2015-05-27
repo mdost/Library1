@@ -400,13 +400,8 @@ public class ParseData {
 	 * @param country
 	 * @return List<ProvState>
 	 * @throws IOException
-	 * @throws XMLStreamException
-	 * @throws JAXBException
-	 * @throws XPathExpressionException
-	 * @throws ParserConfigurationException
-	 * @throws SAXException
 	 */
-	public static List<ProvState> getProvState(String token, String country) throws IOException, XMLStreamException, JAXBException, XPathExpressionException, ParserConfigurationException, SAXException{
+	public static List<ProvState> getProvState(String token, String country) throws IOException{
 		verifyToken(token);
 //		String url = "https://app.place2give.com/Service.svc/give-api?action=getProvState&token=5d24ce6f-0264-44cd-804d-d2cda34b3577&Country=US&format=json";
 		String url = "https://app.place2give.com/Service.svc/give-api?action=getProvState&token="+token+"&Country="+country+"&format=json";

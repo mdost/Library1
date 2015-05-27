@@ -28,4 +28,8 @@ public class GetProvState{
 		return this.text;
 	}
 	
+	public String toString(){
+		return "ID: "+ getID()+" text: "+getText();
+	}
+	
 }
