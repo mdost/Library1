@@ -20,6 +20,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.xpath.XPathExpressionException;
+
 import org.xml.sax.SAXException;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -444,24 +445,31 @@ public class ParseData {
 	public static List<SearchCharities> searchCharities(String token, String PageNumber, String NumPerPage, String CharitySize, String keyword, String CharityType,String Country, String ProvState) throws IOException{
 		verifyToken(token);
 		
-		if((PageNumber ==null) ||(NumPerPage ==null) ){
+		if((PageNumber ==null) || (NumPerPage ==null) ){
 			System.out.println("Please enter the page number and number per page.");
 			return null;
-		}else if((CharitySize ==null) &&(keyword ==null) && (CharityType ==null) ){
+		}else if((PageNumber =="") || (NumPerPage =="") ){
+			System.out.println("Please enter the page number and number per page.");
+			return null;
+		}
+		else if((CharitySize ==null) && (keyword ==null) && (CharityType ==null) ){
+			System.out.println("Please enter one of the following parameters charity size, charity type, or keyword");
+			return null;
+		}else if((CharitySize =="") && (keyword =="") && (CharityType =="") ){
 			System.out.println("Please enter one of the following parameters charity size, charity type, or keyword");
 			return null;
 		}
 		
 		String url ="https://app.place2give.com/Service.svc/give-api?action=searchCharities&token="+token+"&PageNumber="+PageNumber+"&NumPerPage="+NumPerPage;
-		if(CharitySize != null)
+		if(CharitySize != null && CharitySize != "")
 			url+= "&CharitySize="+CharitySize;
-		if(keyword != null)
+		if(keyword != null && keyword != "")
 			url+= "&keyword="+keyword;
-		if(CharityType != null)
+		if(CharityType != null && CharityType != "")
 			url+= "&CharityType="+CharityType;
-		if(Country != null)
+		if(Country != null && Country != "")
 			url+= "&Country="+Country;
-		if(ProvState != null)
+		if(ProvState != null && ProvState != "")
 			url+= "&ProvState="+ProvState;
 		
 		url +="&format=json";
