@@ -142,7 +142,7 @@ public class SearchCharities{
 		return OperatingCountry;
 	}
 	
-	public ContactInfoDetails get(){
+	public ContactInfoDetails getContactInfoDetails(){
 		return ContactInfo;
 	}
 	
