@@ -3,8 +3,11 @@ package com.parseData;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonAutoDetect
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class FinancialData{
 	public Date FiscalYear;
 	public double PrimaryRevenue;
