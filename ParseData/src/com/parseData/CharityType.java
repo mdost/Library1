@@ -8,11 +8,11 @@ public class CharityType{
 	private String type;
 	
 	@JsonProperty("type")
-	public void set(String type){
+	public void setType(String type){
 		this.type = type;
 	}
 	
-	public String get(){
+	public String getType(){
 		return type;
 	}
 }
