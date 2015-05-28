@@ -229,8 +229,7 @@ public class ParseData {
 	}
 	
 	/**
-	 * This methods get the charity salaries for the specific charity (found by registration number), returns an object where it contains all the data. 
-	 * In order to use this methods the input URL must have defined the format as JSON. Without defining this, the method will not work.  
+	 * This methods gets the charity salaries for the specific charity (found by registration number), returns an object where it contains all the data. 
 	 * @param String token
 	 * @param String regNum
 	 * @return Object of type SalaryData
@@ -263,7 +262,7 @@ public class ParseData {
 	}
 	
 	/**
-	 * Parses data received from the input stream (using readURL)
+	 * Parses xml data received from the input stream (using readURL)
 	 * returns an object of type SalaryData (which contains all results)
 	 * The input type must be of the format XML, any other format will not be accepted by this method. 
 	 * @param String token
@@ -305,6 +304,7 @@ public class ParseData {
 	
 	/**
 	 * Returns the details of a specific charity
+	 * If no details are found for a charity or an error occurs, the method will return null.
 	 * @param token
 	 * @param regNum
 	 * @return object of type CharityDetails
@@ -336,6 +336,7 @@ public class ParseData {
 	
 	/**
 	 * Returns financial details of a specific charity
+	 * If no results are found or an error occurs, the method will return null
 	 * @param token
 	 * @param regNum
 	 * @return List<FinancialData>
@@ -429,8 +430,9 @@ public class ParseData {
 	 * Search charities that are active. Returns a list of type object-SearchCharities
 	 * Must enter values for token, page number, num per page.
 	 * Must enter one of the values for charity size, keyword, or charity type at least.
-	 * Entering values for country and provState are not necessary (but can be entered)
-	 * All other values that are not set, please set them to null. 
+	 * Entering values for country and provState are optional
+	 * All other values that are not set, should be set as null or empty string. 
+	 * If no results are found or an error occurs, the method will return null
 	 * @param token
 	 * @param PageNumber
 	 * @param NumPerPage
@@ -501,7 +503,7 @@ public class ParseData {
 	/**
 	 * Return a list of charity files for a specific charity.
 	 * Enter registration number for a specific charity.
-	 * If no results are found, the method returns null
+	 * If no results are found or an error occurs, the method will return null
 	 * @param token
 	 * @param regNum
 	 * @return List<CharityFiles>
@@ -536,6 +538,7 @@ public class ParseData {
 	/**
 	 * Returns a list of project information that are specific to a certain charity
 	 * Must enter registration number for a specific charity
+	 * If no results are found or an error occurs, the method will return null
 	 * @param token
 	 * @param regNum
 	 * @return List<CharityProjects>
@@ -570,6 +573,7 @@ public class ParseData {
 	/**
 	 * Returns an object of type DonationURL that contains the expiration date and the donationURL.
 	 * The donation URL is a unique URL that allows users the ability to make one-time donation
+	 * If all required parameters are not filled then the method will return null. 
 	 * @param String token
 	 * @param Info obj
 	 * @return object of type DonationURL
