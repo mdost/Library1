@@ -1,5 +1,7 @@
 package com.parseData;
 
+import java.util.Date;
+
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -10,7 +12,7 @@ public class CharityDetails{
 	public String CharityOppName;
 	public String CharityType;
 	public String CharitableStatus;
-	public String DateOfStatus;
+	public Date DateOfStatus;
 	public String MissionStatement;
 	public String NumOfStaff;
 	public String MajorDonors;
@@ -21,9 +23,9 @@ public class CharityDetails{
 	public String WhatIsNeeded;
 	public String Notes;
 	public String CharitySubType;
-	public String UpdateStatus;
-	public String DonorType;
-	public String OperatingBudget;
+	public int UpdateStatus;
+	public int DonorType;
+	public double OperatingBudget;
 	public String NumOfVolunteers;
 	public String LogoFilename;
 	public String Description;
@@ -34,18 +36,18 @@ public class CharityDetails{
 	public String GovernancePolicies;
 	public String PeopleImpactedByOrganization;
 	public String PeopleImpactedByPrograms;
-	public String TrueCharityValue;
+	public double TrueCharityValue;
 	public String RoleOfVolunteers;
 	public String VolunteerTurnoverRate;
 	public String PublicPerception;
 	public String Keywords;
-	public String CostOfFundraising;
+	public double CostOfFundraising;
 	public String PressReleases;
 	public String CharitySize;
 	public String HasDonorBillOfRights;
 	public String HasCodeOfEthicalFundraising;
 	public String CharityIntelligenceURL;
-	public String RealCharityValue;
+	public double RealCharityValue;
 	public String CharityAddress;
 	public String CharityCity;
 	public String CharityProvState;
@@ -71,8 +73,8 @@ public class CharityDetails{
 	public String HaveBoardGovMan;
 	public String OverheadExpensesDescription;
 	public String OverheadExpensesPercent;
-	public String FundraisingCost;
-	public String GrossFund;
+	public double FundraisingCost;
+	public double GrossFund;
 	public String InKindDonDescrip;
 	public String Comments;
 	public String ExecutiveDirector;

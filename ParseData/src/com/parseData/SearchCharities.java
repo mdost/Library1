@@ -11,7 +11,7 @@ public class SearchCharities{
 	private String Name;
 	private String Description;
 	private String Type;
-	private String TypeID;
+	private int TypeID;
 	private String ProvState;
 	private String City;
 	private String Country;
@@ -46,7 +46,7 @@ public class SearchCharities{
 	}
 	
 	@JsonProperty("TypeID")
-	public void setTypeID(String value){
+	public void setTypeID(int value){
 		this.TypeID = value;
 	}
 	
@@ -114,7 +114,7 @@ public class SearchCharities{
 		return Type;
 	}
 	
-	public String getTypeID(){
+	public int getTypeID(){
 		return TypeID;
 	}
 	
