@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;
@@ -418,10 +419,21 @@ public class ParseData {
 		TypeFactory typeFactory = mapper.getTypeFactory();
 		GiveAPI checkResults = mapper.readValue(node.get("give-api").toString(), GiveAPI.class);
 		
-		if(checkResults.getStatus_code_description().equalsIgnoreCase("Success") || checkResults.getStatus_code().equals("100"))
+		if(checkResults.getStatus_code_description().equalsIgnoreCase("Success") || checkResults.getStatus_code().equals("100")){
 			details = mapper.readValue(node.get("give-api").get("data").get("proveStates").get("provState").toString(), typeFactory.constructCollectionType(List.class, ProvState.class));
+			for(int i=0; i<details.size(); i++){
+				details.get(i).setError(checkResults);
+			}
+		}
 		else{
 			System.out.println(checkResults.getStatus_code_description());
+			new Exception("Error\nStatus code: "+checkResults.getStatus_code()+"-"+checkResults.getStatus_code_description());
+			
+			details = new ArrayList<ProvState>();
+			ProvState p = new ProvState();
+			p.setError(checkResults);
+			details.add(p);
+			
 		}
 		return details;
 	}

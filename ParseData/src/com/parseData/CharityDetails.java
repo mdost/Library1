@@ -79,6 +79,15 @@ public class CharityDetails{
 	public String Comments;
 	public String ExecutiveDirector;
 	public String OrganizationSize;
+	
+	private GiveAPI error;
+	
+	public void setError(GiveAPI value){
+		this.error= value;
+	}
+	public GiveAPI getError(){
+		return error;
+	}
 
 
 }

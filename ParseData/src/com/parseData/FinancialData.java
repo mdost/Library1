@@ -28,6 +28,14 @@ public class FinancialData{
 	public double DefRevenue;
 	public double OtherLiabilities;
 	public double TotalLiabilities;
-
+	
+	private GiveAPI error;
+	
+	public void setError(GiveAPI value){
+		this.error= value;
+	}
+	public GiveAPI getError(){
+		return error;
+	}
 
 }

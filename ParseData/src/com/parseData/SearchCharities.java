@@ -19,7 +19,8 @@ public class SearchCharities{
 	private String LogoURL;
 	private String OperatingCountry;
 	private ContactInfoDetails ContactInfo;
-	
+	private GiveAPI error;
+
 	private int totalResults;
 	private int totalPages;
 	private int onPage;
@@ -97,6 +98,10 @@ public class SearchCharities{
 		this.onPage = value;
 	}
 	
+	public void setError(GiveAPI value){
+		this.error= value;
+	}
+	
 	//getters
 	public String getregNum(){
 		return regNum;
@@ -156,6 +161,10 @@ public class SearchCharities{
 	
 	public int getOnPage(){
 		return onPage;
+	}
+	
+	public GiveAPI getError(){
+		return error;
 	}
 	
 }

@@ -3,9 +3,11 @@ package com.parseData;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonAutoDetect
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class CharityProjects{
 	private Date DateModified;
 	private String ProjectName;
@@ -14,6 +16,7 @@ public class CharityProjects{
 	private double MaterialCost;
 	private double Overhead;
 	private double OtherCosts;
+	private GiveAPI error;
 	
 	//Setters
 	@JsonProperty("DateModified")
@@ -51,6 +54,10 @@ public class CharityProjects{
 		this.VolHours = value;
 	}
 	
+	public void setError(GiveAPI value){
+		this.error= value;
+	}
+	
 	//getters
 	public double getOtherCosts(){
 		return OtherCosts;
@@ -78,6 +85,10 @@ public class CharityProjects{
 	
 	public Date getDateModified(){
 		return DateModified;
+	}
+	
+	public GiveAPI getError(){
+		return error;
 	}
 	
 }

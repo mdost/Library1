@@ -9,7 +9,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class DonationURL{
 	private String donationURL;
 	private String expires;
-	
+	private GiveAPI error;
+
 	//setters
 	@JsonProperty("donationURL")
 	public void setdonationURL(String value){
@@ -21,7 +22,15 @@ public class DonationURL{
 		this.expires = value;
 	}
 	
+	public void setError(GiveAPI value){
+		this.error= value;
+	}
+	
 	//getters
+	public GiveAPI getError(){
+		return error;
+	}
+	
 	public String getDonationURL(){
 		return donationURL;
 	}

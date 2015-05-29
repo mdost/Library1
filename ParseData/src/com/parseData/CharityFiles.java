@@ -3,9 +3,11 @@ package com.parseData;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonAutoDetect
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class CharityFiles{
 	private int ID;
 	private String Name;
@@ -13,7 +15,8 @@ public class CharityFiles{
 	private Date FileDate;
 	private String Type;
 	private String DownloadUrl;
-	
+	private GiveAPI error;
+
 	//Setters
 	@JsonProperty("ID")
 	public void setID(int id){
@@ -45,6 +48,10 @@ public class CharityFiles{
 		this.DownloadUrl = DownloadUrl;
 	}
 	
+	public void setError(GiveAPI value){
+		this.error= value;
+	}
+	
 	//getters
 	public int getID(){
 		return this.ID;
@@ -68,5 +75,9 @@ public class CharityFiles{
 	
 	public String getDescription(){
 		return this.Description;
+	}
+	
+	public GiveAPI getError(){
+		return error;
 	}
 }

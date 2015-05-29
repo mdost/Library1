@@ -1,15 +1,18 @@
 package com.parseData;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonAutoDetect
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ContactInfoDetails{
 	private String NameOfStaff;
 	private String Email;
 	private String URL;
 	private String Phone;
-	
+	private GiveAPI error;
+
 	//setters
 	@JsonProperty("NameOfStaff")
 	public void setNameOfStaff(String value){
@@ -31,6 +34,10 @@ public class ContactInfoDetails{
 		this.Phone = value;
 	}
 	
+	public void setError(GiveAPI value){
+		this.error= value;
+	}
+	
 	//getters
 	public String getNameOfStaff(){
 		return NameOfStaff;
@@ -46,6 +53,10 @@ public class ContactInfoDetails{
 	
 	public String getPhone(){
 		return Phone;
+	}
+	
+	public GiveAPI getError(){
+		return error;
 	}
 	
 }

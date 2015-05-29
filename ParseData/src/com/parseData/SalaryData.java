@@ -1,9 +1,11 @@
 package com.parseData;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonAutoDetect
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class SalaryData {
 	
 	//@XmlPath("data/charitySalaries/salaryData")
@@ -19,7 +21,8 @@ public class SalaryData {
 	private int NumPartTimeEmployees;
 	private int TotalCompensationPartTimeEmployees;
 	private int TotalCompensationOrganization;
-	
+	private GiveAPI error;
+
 	//setters
 		@JsonProperty("NumTop10_1_39999")
 		public void set_NumTop10_1_39999(int value){
@@ -75,6 +78,10 @@ public class SalaryData {
 			TotalCompensationOrganization= value;
 		}
 		
+		public void setError(GiveAPI value){
+			this.error= value;
+		}
+		
 		//getters
 		public int get_NumTop10_1_39999(){
 			return NumTop10_1_39999;
@@ -124,6 +131,10 @@ public class SalaryData {
 			return TotalCompensationOrganization;
 		}
 	
+		public GiveAPI getError(){
+			return error;
+		}
+		
 		public String toString(){
 			String formattedString = "\n\nCharity Salaries\n"+"----------------------------------------------------------------------\nNumber of top 10 salaries in varying ranges from low to high:\n"
 									+String.format("%s %20s %20s %20s %20s %20s %20s %20s %10s", "1 to 39999","40K to 79999","80K to 119999","120K to 159999","160K to 199999","200K to 249999","250K to 299999","300K to 349999","350K+\n")
