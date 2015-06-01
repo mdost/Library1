@@ -695,7 +695,7 @@ public class ParseData {
 			give.setStatus_code_description("Please enter a registration number.");
 			cf.setError(give);
 			errors.add(cf);
-			return details;
+			return errors;
 		}
 		
 		String url = "https://app.place2give.com/Service.svc/give-api?action=getCharityFiles&token="+token+"&regNum="+regNum+"&format=json";
