@@ -48,6 +48,10 @@ public class ParseData {
 		CA, US
 	};
 	
+	public enum CurrencyEnum{
+		CAD, USD
+	};
+	
 	public enum ProjectType{
 		C, P
 	};
@@ -800,7 +804,6 @@ public class ParseData {
 	 * @throws IOException
 	 */
 	public static DonationURL getDonationURL(String token, Info obj) throws IOException{
-		
 		DonationURL details = null ;
 		DonationURL errors = new DonationURL();
 		GiveAPI give = new GiveAPI();
@@ -830,10 +833,13 @@ public class ParseData {
 			}
 		}else{
 			String projectType = obj.getProjectType().toUpperCase();
+			String currency = obj.getCurrency().toUpperCase();
 			ProjectType pt;
 			CountryEnum c;
+			CurrencyEnum ce;
 			try{
 				pt = ProjectType.valueOf(projectType);
+				ce = CurrencyEnum.valueOf(currency);
 				
 				if(obj.getCountry() != null && obj.getCountry() != ""){
 					String country = obj.getCountry().toUpperCase();
@@ -841,7 +847,7 @@ public class ParseData {
 				}
 			}catch(IllegalArgumentException e){
 				give.setstatus_code("204");
-				give.setStatus_code_description("Invalid projectType or country, please enter the correct ID for project type (C or P).");
+				give.setStatus_code_description("Invalid projectType, currency, or country, please enter the correct ID for project type (C or P).");
 				errors.setError(give);
 				return errors;
 			}
