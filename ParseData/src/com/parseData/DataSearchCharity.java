@@ -10,6 +10,7 @@ public class DataSearchCharity{
 	private int totalResults;
 	private int totalPages;
 	private int onPage;
+	private SearchCharities searchResults;
 	
 	//setter
 	@JsonProperty("totalResults")
@@ -27,6 +28,11 @@ public class DataSearchCharity{
 		this.onPage = value;
 	}
 	
+	@JsonProperty("charities")
+	public void setResults(SearchCharities value){
+		this.searchResults = value;
+	}
+	
 	//getter
 	public int getTotalResults(){
 		return totalResults;
@@ -38,5 +44,9 @@ public class DataSearchCharity{
 	
 	public int getOnPage(){
 		return onPage;
+	}
+	
+	public SearchCharities getSearchCharitiesResults(){
+		return searchResults;
 	}
 }

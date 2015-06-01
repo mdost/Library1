@@ -39,6 +39,18 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
 public class ParseData {
 	private volatile static boolean called=false;
 	
+	public enum CharitySizeEnum{
+		LARGE, UNKNOWN, SMALL, MEDIUM, VERYLARGE
+	};
+	
+	public enum CountryEnum{
+		CA, US
+	};
+	
+	public enum ProjectType{
+		C, P
+	};
+	
 	/**
 	 * Returns the token for a specific APPID and APPSecret.
 	 * Will only be called once on startup, it will provide the token, the user must save that token for further uses. 
@@ -238,14 +250,19 @@ public class ParseData {
 	 */
 	public static SalaryData getCharitySalaries(String token,String regNum) throws IOException{
 		verifyToken(token);
-		String url = "https://app.place2give.com/Service.svc/give-api?action=getCharitySalaries&token="+token+"&regNum="+regNum+"&format=json";
-		String reader = readURL_GET(url);
 		SalaryData data = null ;
 		
-		if(regNum == null && regNum == ""){
-			System.out.println("Please registration number of a charity.");
-			return null;
+		if(regNum == null || regNum == ""){
+			data = new SalaryData();
+			GiveAPI give = new GiveAPI();
+			give.setstatus_code("204");
+			give.setStatus_code_description("Please enter a registration number.");
+			data.setError(give);
+			return data;
 		}
+		
+		String url = "https://app.place2give.com/Service.svc/give-api?action=getCharitySalaries&token="+token+"&regNum="+regNum+"&format=json";
+		String reader = readURL_GET(url);
 
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.setSerializationInclusion(Include.NON_NULL);
@@ -318,14 +335,18 @@ public class ParseData {
 	 */
 	public static CharityDetails getCharityDetails(String token, String regNum) throws IOException{
 		verifyToken(token);
-		String url = "https://app.place2give.com/Service.svc/give-api?action=getCharityDetails&token="+token+"&regNum="+regNum+"&format=json";
-		String reader = readURL_GET(url);
 		CharityDetails details = null ;
 		
-		if(regNum == null){
-			System.out.println("Please registration number of a charity.");
-			return null;
+		if(regNum == null || regNum.equals("")){
+			details = new CharityDetails();
+			GiveAPI give = new GiveAPI();
+			give.setstatus_code("204");
+			give.setStatus_code_description("Please enter a registration number.");
+			details.setError(give);
+			return details;
 		}
+		String url = "https://app.place2give.com/Service.svc/give-api?action=getCharityDetails&token="+token+"&regNum="+regNum+"&format=json";
+		String reader = readURL_GET(url);
 		
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.setSerializationInclusion(Include.NON_NULL);
@@ -355,14 +376,21 @@ public class ParseData {
 	 */
 	public static List<FinancialData> getFinancialDetails(String token, String regNum) throws IOException{
 		verifyToken(token);
-		String url = "https://app.place2give.com/Service.svc/give-api?action=getFinancialDetails&token="+token+"&regNum="+regNum+"&format=json";
-		String reader = readURL_GET(url);
 		List<FinancialData> details= null;
 		
-		if(regNum == null){
-			System.out.println("Please registration number of a charity.");
-			return null;
+		if(regNum == null || regNum.equals("")){
+			details = new ArrayList<FinancialData>();
+			GiveAPI give = new GiveAPI();
+			FinancialData fd = new FinancialData();
+			give.setstatus_code("204");
+			give.setStatus_code_description("Please enter a registration number.");
+			fd.setError(give);
+			details.add(fd);
+			return details;
 		}
+		
+		String url = "https://app.place2give.com/Service.svc/give-api?action=getFinancialDetails&token="+token+"&regNum="+regNum+"&format=json";
+		String reader = readURL_GET(url);
 		
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.setSerializationInclusion(Include.NON_NULL);
@@ -434,14 +462,36 @@ public class ParseData {
 	 */
 	public static List<ProvState> getProvState(String token, String country) throws IOException{
 		verifyToken(token);
-		String url = "https://app.place2give.com/Service.svc/give-api?action=getProvState&token="+token+"&Country="+country+"&format=json";
-		String reader = readURL_GET(url);
 		List<ProvState> details = null;
 		
-		if(country == null){
-			System.out.println("Please registration number of a charity.");
-			return null;
+		if(country == null || country.equals("")){
+			details = new ArrayList<ProvState>();
+			ProvState p = new ProvState();
+			GiveAPI give = new GiveAPI();
+			give.setstatus_code("204");
+			give.setStatus_code_description("Please enter the parameter country.");
+			p.setError(give);
+			details.add(p);
+			return details;
 		}
+		
+		country = country.toUpperCase();
+		CountryEnum c;
+		try{
+			c = CountryEnum.valueOf(country);
+		}catch(IllegalArgumentException e){
+			details = new ArrayList<ProvState>();
+			ProvState p = new ProvState();
+			GiveAPI give = new GiveAPI();
+			give.setstatus_code("204");
+			give.setStatus_code_description("Invalid country, please enter the correct ID of the country.");
+			p.setError(give);
+			details.add(p);
+			return details;
+		}
+		
+		String url = "https://app.place2give.com/Service.svc/give-api?action=getProvState&token="+token+"&Country="+country+"&format=json";
+		String reader = readURL_GET(url);
 		
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.setSerializationInclusion(Include.NON_NULL);
@@ -449,13 +499,15 @@ public class ParseData {
 		TypeFactory typeFactory = mapper.getTypeFactory();
 		GiveAPI checkResults = mapper.readValue(node.get("give-api").toString(), GiveAPI.class);
 		
-		if(checkResults.getStatus_code_description().equalsIgnoreCase("Success") || checkResults.getStatus_code().equals("100")){
-			details = mapper.readValue(node.get("give-api").get("data").get("proveStates").get("provState").toString(), typeFactory.constructCollectionType(List.class, ProvState.class));
-			for(int i=0; i<details.size(); i++){
-				details.get(i).setError(checkResults);
+		if(c != null){
+			System.out.println("correct country inpu");
+			if(checkResults.getStatus_code_description().equalsIgnoreCase("Success") || checkResults.getStatus_code().equals("100")){
+				details = mapper.readValue(node.get("give-api").get("data").get("proveStates").get("provState").toString(), typeFactory.constructCollectionType(List.class, ProvState.class));
+				for(int i=0; i<details.size(); i++){
+					details.get(i).setError(checkResults);
+				}
 			}
-		}
-		else{
+		}else{
 			System.out.println(checkResults.getStatus_code_description());
 			new Exception("Error\nStatus code: "+checkResults.getStatus_code()+"-"+checkResults.getStatus_code_description());
 			
@@ -488,63 +540,105 @@ public class ParseData {
 	 */
 	public static List<SearchCharities> searchCharities(String token, String PageNumber, String NumPerPage, String CharitySize, String keyword, String CharityType,String Country, String ProvState) throws IOException{
 		verifyToken(token);
+		List<SearchCharities> details=null;
+		List<SearchCharities> errors = new ArrayList<SearchCharities>();
+		SearchCharities sc = new SearchCharities();
+		GiveAPI give = new GiveAPI();
 		
-		if((PageNumber ==null) || (NumPerPage ==null) ){
-			System.out.println("Please enter the page number and number per page.");
-			return null;
-		}else if((PageNumber =="") || (NumPerPage =="") ){
-			System.out.println("Please enter the page number and number per page.");
-			return null;
-		}
-		else if((CharitySize ==null) && (keyword ==null) && (CharityType ==null) ){
-			System.out.println("Please enter one of the following parameters charity size, charity type, or keyword");
-			return null;
-		}else if((CharitySize =="") && (keyword =="") && (CharityType =="") ){
-			System.out.println("Please enter one of the following parameters charity size, charity type, or keyword");
-			return null;
+		if((PageNumber ==null) || (NumPerPage ==null) || (PageNumber =="") || (NumPerPage =="")){
+			give.setstatus_code("204");
+			give.setStatus_code_description("Please enter the page number and number per page.");
+			sc.setError(give);
+			errors.add(sc);
+			return errors;
+		} else if((CharitySize ==null) && (keyword ==null) && (CharityType ==null) || (CharitySize.equals("")) && (keyword.equals("")) && (CharityType.equals(""))){
+			give.setstatus_code("204");
+			give.setStatus_code_description("Please enter one of the following parameters charity size, charity type, or keyword");
+			sc.setError(give);
+			errors.add(sc);
+			return errors;		
 		}
 		
 		String url ="https://app.place2give.com/Service.svc/give-api?action=searchCharities&token="+token+"&PageNumber="+PageNumber+"&NumPerPage="+NumPerPage;
-		if(CharitySize != null && CharitySize != "")
-			url+= "&CharitySize="+CharitySize;
+		if(CharitySize != null && CharitySize != ""){
+			String size = CharitySize.toUpperCase();
+			CharitySizeEnum cse;
+			try{
+				if(CharitySize.equalsIgnoreCase("VERY LARGE")){
+					String[] temp = size.split(" ");
+					size = temp[0]+temp[1];
+					CharitySize = temp[0]+"%20"+temp[1];
+				}
+				cse = CharitySizeEnum.valueOf(size);
+			}catch(IllegalArgumentException e){
+				give.setstatus_code("204");
+				give.setStatus_code_description("Invalid charity size, please enter the correct charity size.");
+				sc.setError(give);
+				errors.add(sc);
+				return errors;
+			}
+			url+= "&CharitySize="+CharitySize.toUpperCase();
+		}
 		if(keyword != null && keyword != "")
 			url+= "&keyword="+keyword;
 		if(CharityType != null && CharityType != "")
 			url+= "&CharityType="+CharityType;
-		if(Country != null && Country != "")
+		if(Country != null && Country != ""){
+			Country = Country.toUpperCase();
+			CountryEnum ce;
+			try{
+				ce = CountryEnum.valueOf(Country);
+			}catch(IllegalArgumentException e){
+				give.setstatus_code("204");
+				give.setStatus_code_description("Invalid country, please enter the correct ID for country.");
+				sc.setError(give);
+				errors.add(sc);
+				return errors;
+			}
 			url+= "&Country="+Country;
+		}
 		if(ProvState != null && ProvState != "")
 			url+= "&ProvState="+ProvState;
 		
 		url +="&format=json";
 		
 		String reader = readURL_GET(url);
-		List<SearchCharities> details=null;
 		
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.setSerializationInclusion(Include.NON_NULL);
 		JsonNode node = mapper.readTree(reader);
 		TypeFactory typeFactory = mapper.getTypeFactory();
 		GiveAPI checkResults = mapper.readValue(node.get("give-api").toString(), GiveAPI.class);
-		DataSearchCharity dsc = mapper.readValue(node.get("give-api").get("data").toString(), DataSearchCharity.class);
 		
 		if(checkResults.getStatus_code_description().equalsIgnoreCase("Success") || checkResults.getStatus_code().equals("100")){
-			details = mapper.readValue(node.get("give-api").get("data").get("charities").get("charity").toString(), typeFactory.constructCollectionType(List.class, SearchCharities.class));
-			for(SearchCharities i : details){
-				i.setTotalPages(dsc.getTotalPages());
-				i.setTotalResults(dsc.getTotalResults());
-				i.setOnPage(dsc.getOnPage());
-				i.setError(checkResults);
+			DataSearchCharity dsc = mapper.readValue(node.get("give-api").get("data").toString(), DataSearchCharity.class);
+			
+			if(dsc.getSearchCharitiesResults() != null){
+				details = mapper.readValue(node.get("give-api").get("data").get("charities").get("charity").toString(), typeFactory.constructCollectionType(List.class, SearchCharities.class));
+				for(SearchCharities i : details){
+					i.setTotalPages(dsc.getTotalPages());
+					i.setTotalResults(dsc.getTotalResults());
+					i.setOnPage(dsc.getOnPage());
+					i.setError(checkResults);
+				}
+			}else{
+				give.setstatus_code("200");
+				give.setStatus_code_description("No results found for charities");
+				sc.setError(give);
+				sc.setTotalPages(dsc.getTotalPages());
+				sc.setTotalResults(dsc.getTotalResults());
+				sc.setOnPage(dsc.getOnPage());
+				errors.add(sc);
+				return errors;
 			}
 		}
 		else{
 			System.out.println(checkResults.getStatus_code_description());
 			new Exception("Error\nStatus code: "+checkResults.getStatus_code()+"-"+checkResults.getStatus_code_description());
-			
-			details = new ArrayList<SearchCharities>();
-			SearchCharities sc = new SearchCharities();
+	
 			sc.setError(checkResults);
-			details.add(sc);
+			errors.add(sc);
+			return errors;
 		}
 		return details;
 	}
@@ -560,14 +654,21 @@ public class ParseData {
 	 */
 	public static List<CharityFiles> getCharityFiles(String token, String regNum) throws IOException{
 		verifyToken(token);
-		String url = "https://app.place2give.com/Service.svc/give-api?action=getCharityFiles&token="+token+"&regNum="+regNum+"&format=json";
-		String reader = readURL_GET(url);
 		List<CharityFiles> details = null;
 		
-		if(regNum == null){
-			System.out.println("Please registration number of a charity.");
-			return null;
+		if(regNum == null || regNum.equals("")){
+			details = new ArrayList<CharityFiles>();
+			GiveAPI give = new GiveAPI();
+			CharityFiles cf = new CharityFiles();
+			give.setstatus_code("204");
+			give.setStatus_code_description("Please enter a registration number.");
+			cf.setError(give);
+			details.add(cf);
+			return details;
 		}
+		
+		String url = "https://app.place2give.com/Service.svc/give-api?action=getCharityFiles&token="+token+"&regNum="+regNum+"&format=json";
+		String reader = readURL_GET(url);
 		
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.setSerializationInclusion(Include.NON_NULL);
@@ -606,14 +707,21 @@ public class ParseData {
 	 */
 	public static List<CharityProjects> getCharityProjects(String token, String regNum) throws IOException{
 		verifyToken(token);
-		String url = "https://app.place2give.com/Service.svc/give-api?action=getCharityProjects&token="+token+"&regNum="+regNum+"&format=json";
-		String reader = readURL_GET(url);
 		List<CharityProjects> details = null ;
 		
-		if(regNum == null){
-			System.out.println("Please registration number of a charity.");
-			return null;
+		if(regNum == null || regNum.equals("")){
+			details = new ArrayList<CharityProjects>();
+			GiveAPI give = new GiveAPI();
+			CharityProjects cp = new CharityProjects();
+			give.setstatus_code("204");
+			give.setStatus_code_description("Please enter a registration number.");
+			cp.setError(give);
+			details.add(cp);
+			return details;
 		}
+		
+		String url = "https://app.place2give.com/Service.svc/give-api?action=getCharityProjects&token="+token+"&regNum="+regNum+"&format=json";
+		String reader = readURL_GET(url);
 		
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.setSerializationInclusion(Include.NON_NULL);
@@ -652,16 +760,46 @@ public class ParseData {
 	public static DonationURL getDonationURL(String token, Info obj) throws IOException{
 		verifyToken(token);
 		String url="https://app.place2give.com/Service.svc/give-api?action=getDonationURL&token="+token;
+		DonationURL details = null ;
 		
 		if(obj.getRegNum() == null || obj.getProjectType() ==null || obj.getBackURL() == null || obj.getRedirectURL() == null || obj.getCurrency() == null || obj.getAmount() == null){
 			System.out.println("One of the parameters were not specefied. Please read the documentation.");
-			return null;
+			details = new DonationURL();
+			GiveAPI give = new GiveAPI();
+			give.setstatus_code("204");
+			give.setStatus_code_description("Invalid parameters, please enter the correct the correct parameters");
+			details.setError(give);
+			return details;
 		}else if(obj.getIsAnonymous() == false){
 			if(obj.getFirstName() == null || obj.getLastName() == null || obj.getEmail() == null || obj.getAddress()== null || obj.getPostalZip() == null || obj.getProvState()==null || obj.getCity()==null || obj.getCountry()==null){
 				System.out.println("One of the parameters for donor info was not specified. Please check the documentation.");
-				return null;
+				details = new DonationURL();
+				GiveAPI give = new GiveAPI();
+				give.setstatus_code("204");
+				give.setStatus_code_description("Invalid parameters, please enter the correct parameters.");
+				details.setError(give);
+				return details;
 			}
 		}else{
+			String projectType = obj.getProjectType().toUpperCase();
+			ProjectType pt;
+			CountryEnum c;
+			try{
+				pt = ProjectType.valueOf(projectType);
+				
+				if(obj.getCountry() != null && obj.getCountry() != ""){
+					String country = obj.getCountry().toUpperCase();
+					c = CountryEnum.valueOf(country);
+				}
+			}catch(IllegalArgumentException e){
+				details = new DonationURL();
+				GiveAPI give = new GiveAPI();
+				give.setstatus_code("204");
+				give.setStatus_code_description("Invalid projectType or country, please enter the correct ID for project type (C or P).");
+				details.setError(give);
+				return details;
+			}
+			
 			if(obj.getClientfee() == null)
 				url += "&regNum="+obj.getRegNum()+"&ProjectType="+obj.getProjectType()+"&BackURL="+obj.getBackURL()+"&RedirectURL="+obj.getRedirectURL()+"&Amount="+obj.getAmount()+"&Currency="+obj.getCurrency()+"&IsAnonymous="+obj.getIsAnonymous()+"&FirstName="+obj.getFirstName()+"&LastName="+obj.getLastName()+"&Address="+obj.getAddress()+"&City="+obj.getCity()+"&ProvState="+obj.getProvState()+"&Country="+obj.getCountry()+"&PostalZip="+obj.getPostalZip()+"&Email="+obj.getEmail()
 					+"&Note="+obj.getNote()+"&InHonourOf="+obj.getInHonourOf()+"&InMemorialOf="+obj.getInMemorialOf()+"&format=json";
@@ -672,7 +810,6 @@ public class ParseData {
 		}
 		
 		String reader = readURL_GET(url);
-		DonationURL details = null ;
 
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.setSerializationInclusion(Include.NON_NULL);
