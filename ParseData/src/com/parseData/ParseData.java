@@ -820,14 +820,14 @@ public class ParseData {
 		if(obj.getRegNum() == null || obj.getProjectType() ==null || obj.getBackURL() == null || obj.getRedirectURL() == null || obj.getCurrency() == null || obj.getAmount() == null || obj.getRegNum().equals("") || obj.getProjectType().equals("") || obj.getBackURL().equals("") || obj.getRedirectURL().equals("") || obj.getCurrency().equals("") || obj.getAmount().equals("")){
 			System.out.println("One of the parameters were not specefied. Please read the documentation.");
 			give.setstatus_code("204");
-			give.setStatus_code_description("Invalid parameters, please enter the correct the correct parameters");
+			give.setStatus_code_description("Invalid parameters, please enter the required the parameters");
 			errors.setError(give);
 			return errors;
 		}else if(obj.getIsAnonymous() == false){
 			if(obj.getFirstName() == null || obj.getLastName() == null || obj.getEmail() == null || obj.getAddress()== null || obj.getPostalZip() == null || obj.getProvState()==null || obj.getCity()==null || obj.getCountry()==null || obj.getFirstName().equals("") || obj.getLastName().equals("") || obj.getEmail().equals("") || obj.getAddress().equals("") || obj.getPostalZip().equals("") || obj.getProvState().equals("") || obj.getCity().equals("") || obj.getCountry().equals("")){
 				System.out.println("One of the parameters for donor info was not specified. Please check the documentation.");
 				give.setstatus_code("204");
-				give.setStatus_code_description("Invalid parameters, please enter the correct parameters.");
+				give.setStatus_code_description("Invalid parameters, please enter personal information since the donation is not anonymous.");
 				errors.setError(give);
 				return errors;
 			}
@@ -847,7 +847,7 @@ public class ParseData {
 				}
 			}catch(IllegalArgumentException e){
 				give.setstatus_code("204");
-				give.setStatus_code_description("Invalid projectType, currency, or country, please enter the correct ID for project type (C or P).");
+				give.setStatus_code_description("Invalid projectType, currency, or country, please enter the correct parameters.");
 				errors.setError(give);
 				return errors;
 			}
