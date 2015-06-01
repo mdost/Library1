@@ -242,7 +242,7 @@ public class ParseData {
 		String reader = readURL_GET(url);
 		SalaryData data = null ;
 		
-		if(regNum == null){
+		if(regNum == null && regNum == ""){
 			System.out.println("Please registration number of a charity.");
 			return null;
 		}
@@ -252,10 +252,15 @@ public class ParseData {
 		JsonNode node = mapper.readTree(reader);
 		GiveAPI checkResults = mapper.readValue(node.get("give-api").toString(), GiveAPI.class);
 			
-		if(checkResults.getStatus_code_description().equalsIgnoreCase("Success") || checkResults.getStatus_code().equals("100"))
+		if(checkResults.getStatus_code_description().equalsIgnoreCase("Success") || checkResults.getStatus_code().equals("100")){
 			data = mapper.readValue(node.get("give-api").get("data").get("charitySalaries").get("salaryData").toString(), SalaryData.class);
-		else{
+			data.setError(checkResults);
+		}else{
 			System.out.println(checkResults.getStatus_code_description());
+			new Exception("Error\nStatus code: "+checkResults.getStatus_code()+"-"+checkResults.getStatus_code_description());
+			
+			data = new SalaryData();
+			data.setError(checkResults);
 		}
 	
 		return data;
@@ -327,10 +332,15 @@ public class ParseData {
 		JsonNode node = mapper.readTree(reader);
 		GiveAPI checkResults = mapper.readValue(node.get("give-api").toString(), GiveAPI.class);
 		
-		if(checkResults.getStatus_code_description().equalsIgnoreCase("Success") || checkResults.getStatus_code().equals("100"))
+		if(checkResults.getStatus_code_description().equalsIgnoreCase("Success") || checkResults.getStatus_code().equals("100")){
 			details = mapper.readValue(node.get("give-api").get("data").toString(), CharityDetails.class);
-		else{
+			details.setError(checkResults);
+		} else{
 			System.out.println(checkResults.getStatus_code_description());
+			new Exception("Error\nStatus code: "+checkResults.getStatus_code()+"-"+checkResults.getStatus_code_description());
+			
+			details = new CharityDetails();
+			details.setError(checkResults);
 		}
 		return details;
 	}
@@ -362,8 +372,18 @@ public class ParseData {
 		
 		if(checkResults.getStatus_code_description().equalsIgnoreCase("Success") || checkResults.getStatus_code().equals("100")){
 			details = mapper.readValue(node.get("give-api").get("data").get("financialDetails").get("financialData").toString(), typeFactory.constructCollectionType(List.class, FinancialData.class));
+			
+			for(FinancialData i: details){
+				i.setError(checkResults);
+			}
 		}else{
 			System.out.println(checkResults.getStatus_code_description());
+			new Exception("Error\nStatus code: "+checkResults.getStatus_code()+"-"+checkResults.getStatus_code_description());
+			
+			details = new ArrayList<FinancialData>();
+			FinancialData fd = new FinancialData();
+			fd.setError(checkResults);
+			details.add(fd);
 		}
 		
 		return details;
@@ -387,10 +407,20 @@ public class ParseData {
 		TypeFactory typeFactory = mapper.getTypeFactory();
 		GiveAPI checkResults = mapper.readValue(node.get("give-api").toString(), GiveAPI.class);
 		
-		if(checkResults.getStatus_code_description().equalsIgnoreCase("Success") || checkResults.getStatus_code().equals("100"))
+		if(checkResults.getStatus_code_description().equalsIgnoreCase("Success") || checkResults.getStatus_code().equals("100")){
 			details = mapper.readValue(node.get("give-api").get("data").get("charityTypes").get("charityType").toString(), typeFactory.constructCollectionType(List.class, CharityType.class));
-		else{
+			
+			for(CharityType i: details){
+				i.setError(checkResults);
+			}
+		} else{
 			System.out.println(checkResults.getStatus_code_description());
+			new Exception("Error\nStatus code: "+checkResults.getStatus_code()+"-"+checkResults.getStatus_code_description());
+			
+			details = new ArrayList<CharityType>();
+			CharityType ct = new CharityType();
+			ct.setError(checkResults);
+			details.add(ct);
 		}
 		return details;
 	}
@@ -504,10 +534,17 @@ public class ParseData {
 				i.setTotalPages(dsc.getTotalPages());
 				i.setTotalResults(dsc.getTotalResults());
 				i.setOnPage(dsc.getOnPage());
+				i.setError(checkResults);
 			}
 		}
 		else{
 			System.out.println(checkResults.getStatus_code_description());
+			new Exception("Error\nStatus code: "+checkResults.getStatus_code()+"-"+checkResults.getStatus_code_description());
+			
+			details = new ArrayList<SearchCharities>();
+			SearchCharities sc = new SearchCharities();
+			sc.setError(checkResults);
+			details.add(sc);
 		}
 		return details;
 	}
@@ -540,8 +577,19 @@ public class ParseData {
 		
 		if(checkResults.getStatus_code_description().equalsIgnoreCase("Success") && checkResults.getStatus_code().equals("100")){
 			details = mapper.readValue(node.get("give-api").get("data").get("charityFiles").get("file").toString(), typeFactory.constructCollectionType(List.class, CharityFiles.class));
+			
+			for(CharityFiles i: details){
+				i.setError(checkResults);
+			}
+			
 		}else{
 			System.out.println(checkResults.getStatus_code_description());
+			new Exception("Error\nStatus code: "+checkResults.getStatus_code()+"-"+checkResults.getStatus_code_description());
+			
+			details = new ArrayList<CharityFiles>();
+			CharityFiles sc = new CharityFiles();
+			sc.setError(checkResults);
+			details.add(sc);
 		}
 		
 		return details;
@@ -575,8 +623,18 @@ public class ParseData {
 		
 		if(checkResults.getStatus_code_description().equalsIgnoreCase("Success") || checkResults.getStatus_code().equals("100")){
 			details = mapper.readValue(node.get("give-api").get("data").get("charityProjects").get("project").toString(), typeFactory.constructCollectionType(List.class, CharityProjects.class));
+			
+			for(CharityProjects i: details){
+				i.setError(checkResults);
+			}
 		}else{
 			System.out.println(checkResults.getStatus_code_description());
+			new Exception("Error\nStatus code: "+checkResults.getStatus_code()+"-"+checkResults.getStatus_code_description());
+			
+			details = new ArrayList<CharityProjects>();
+			CharityProjects sc = new CharityProjects();
+			sc.setError(checkResults);
+			details.add(sc);
 		}
 		
 		return details;
@@ -623,8 +681,13 @@ public class ParseData {
 		
 		if(checkResults.getStatus_code_description().equalsIgnoreCase("Success") || checkResults.getStatus_code().equals("100")){
 			details = mapper.readValue(node.get("give-api").get("data").toString(), DonationURL.class);
+			details.setError(checkResults);
 		}else{
 			System.out.println(checkResults.getStatus_code_description());
+			new Exception("Error\nStatus code: "+checkResults.getStatus_code()+"-"+checkResults.getStatus_code_description());
+			
+			details = new DonationURL();
+			details.setError(checkResults);
 		}
 		
 		return details;
