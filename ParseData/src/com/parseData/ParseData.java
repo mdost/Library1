@@ -304,47 +304,6 @@ public class ParseData {
 	}
 	
 	/**
-	 * Parses xml data received from the input stream (using readURL)
-	 * returns an object of type SalaryData (which contains all results)
-	 * The input type must be of the format XML, any other format will not be accepted by this method. 
-	 * @param String token
-	 * @param String regNum
-	 * @return Object of type SalaryData
-	 * @throws IOException
-	 * @throws JAXBException
-	 * @throws XMLStreamException
-	 */
-	public static SalaryData getCharitySalaries_xml(String token, String regNum) throws IOException, JAXBException, XMLStreamException{
-		verifyToken(token);
-
-		String url = "http://app.place2give.com/Service.svc/give-api?action=getCharitySalaries&token="+token+"&regNum="+regNum+"&format=json";
-		InputStream inReader = openURL_POST(url);
-				
-		SalaryData salary = null;
-		
-		XMLInputFactory xif = XMLInputFactory.newFactory();
-		XMLStreamReader xmlReader = xif.createXMLStreamReader(inReader);
-		
-		int tag =0;
-		int event;
-		for(event = xmlReader.next(); event != XMLStreamReader.END_DOCUMENT; event = xmlReader.next()){
-			if(event == XMLStreamReader.START_ELEMENT){
-				if(xmlReader.getLocalName() == "salaryData"){
-					break;
-				}
-			}
-		}
-		
-		if(event != XMLStreamReader.END_DOCUMENT){
-			JAXBContext context = JAXBContext.newInstance(SalaryData.class);
-			Unmarshaller un = context.createUnmarshaller();
-			JAXBElement <SalaryData> temp = un.unmarshal(xmlReader, SalaryData.class);
-			salary = temp.getValue();
-		}
-		return salary;
-	}
-	
-	/**
 	 * Returns the details of a specific charity
 	 * If proper parameters are not entered the method will return an error in object of type CharityDetails.
 	 * The error message which is encapsulated in the object (CharityDetails) should always be checked after calling this method.
