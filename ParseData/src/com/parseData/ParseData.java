@@ -37,6 +37,7 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
 
 
 public class ParseData {
+	//private variables
 	private volatile static boolean called=false;
 	
 	public enum CharitySizeEnum{
@@ -53,7 +54,8 @@ public class ParseData {
 	
 	/**
 	 * Returns the token for a specific APPID and APPSecret.
-	 * Will only be called once on startup, it will provide the token, the user must save that token for further uses. 
+	 * Will only be called once on startup, it will provide the token, the user must save that token for further usage. 
+	 * If called again, the method will return null.
 	 * @param String appid
 	 * @param String appsecret
 	 * @return String token
@@ -92,18 +94,24 @@ public class ParseData {
 	}
 	
 	/**
-	 * Verify the token to ensure on startup of the library they have called getToken()
-	 * @param token
+	 * Verify the token to ensure on startup of the library the method getToken() has been called.
+	 * This method does error handling, it check if the token entered is of valid length, non-empty string, and is not null.
+	 * If any of these condition above are satisfied the method will return an object of type GiveAPI, where it will contain error-code and error-description. 
+	 * @param String token
+	 * @return object of type GiveAPI
 	 * @throws IOException
 	 */
-	private static void verifyToken(String token) throws IOException{
+	private static GiveAPI verifyToken(String token) throws IOException{
+		GiveAPI error = new GiveAPI();		
 		if(called = false){
-			System.out.println("Please get token by calling getToken(appid, appsecret)");
+			error.setstatus_code("204");
+			error.setStatus_code_description("Please get token by calling getToken(appid, appsecret)");
 			System.exit(0);;
 		}else if(token == null || token.contains(" ") || token.length() != 36){
-			System.out.println("\nThe token entered was invalid.");
-			System.exit(0);
+			error.setstatus_code("204");
+			error.setStatus_code_description("The token entered was invalid");
 		}
+		return error;
 	}
 	
 	/**
@@ -112,7 +120,7 @@ public class ParseData {
 	 * @return String data
 	 * @throws IOException
 	 */
-	private static String readURL_POST(String url) throws IOException{
+	public static String readURL_POST(String url) throws IOException{
 		URL getURL = new URL(url);
 		HttpURLConnection connection =(HttpURLConnection) getURL.openConnection();
 		connection.setRequestMethod("POST");
@@ -156,11 +164,12 @@ public class ParseData {
 		return output;
 	}
 	
-	/**Opens the connection for the given URL and reads the input by using GET request
+	/**
+	 * Opens the connection for the given URL and reads the input by using GET request
 	 * @param String url
 	 * @return String data
 	 * */
-	private static String readURL_GET(String url) throws IOException{
+	public static String readURL_GET(String url) throws IOException{
 		URL getURL = new URL(url);
 		URLConnection connect = getURL.openConnection();
 		
@@ -187,11 +196,12 @@ public class ParseData {
 		return output;
 	}
 	
-	/**Opens the connection for the given URL and reads the input by using GET request
+	/**
+	 * Opens the connection for the given URL and reads the input by using GET request
 	 * @param String url
 	 * @return String data
 	 * */
-	private static InputStream openURL_GET(String url) throws IOException{
+	public static InputStream openURL_GET(String url) throws IOException{
 		URL getURL = new URL(url);
 		URLConnection connect = getURL.openConnection();
 		int status = ((HttpURLConnection) connect).getResponseCode();
@@ -212,7 +222,7 @@ public class ParseData {
 	 * @return InputStream
 	 * @throws IOException
 	 */
-	private static InputStream openURL_POST(String url) throws IOException{
+	public static InputStream openURL_POST(String url) throws IOException{
 		URL getURL = new URL(url);
 		HttpURLConnection connection =(HttpURLConnection) getURL.openConnection();
 		connection.setRequestMethod("POST");
@@ -243,18 +253,27 @@ public class ParseData {
 	
 	/**
 	 * This methods gets the charity salaries for the specific charity (found by registration number), returns an object where it contains all the data. 
+	 * If proper parameters are not entered the method will return an error in object of type SalaryData.
+	 * The error message which is encapsulated in the object (SalaryData) should always be checked after calling this method.
+	 * If the error is 100 = it means the retrieval was successful otherwise an error occurred.
 	 * @param String token
 	 * @param String regNum
 	 * @return Object of type SalaryData
 	 * @throws IOException
 	 */
 	public static SalaryData getCharitySalaries(String token,String regNum) throws IOException{
-		verifyToken(token);
 		SalaryData data = null ;
+		GiveAPI give = new GiveAPI();
+		GiveAPI error = verifyToken(token);
+
+		if(error.getStatus_code() != null && !error.getStatus_code().equals("100")){
+			data = new SalaryData();
+			data.setError(error);
+			return data;
+		}
 		
 		if(regNum == null || regNum == ""){
 			data = new SalaryData();
-			GiveAPI give = new GiveAPI();
 			give.setstatus_code("204");
 			give.setStatus_code_description("Please enter a registration number.");
 			data.setError(give);
@@ -327,15 +346,23 @@ public class ParseData {
 	
 	/**
 	 * Returns the details of a specific charity
-	 * If no details are found for a charity or an error occurs, the method will return null.
-	 * @param token
-	 * @param regNum
+	 * If proper parameters are not entered the method will return an error in object of type CharityDetails.
+	 * The error message which is encapsulated in the object (CharityDetails) should always be checked after calling this method.
+	 * If the error is 100 = it means the retrieval was successful otherwise an error occurred.
+	 * @param String token
+	 * @param String regNum
 	 * @return object of type CharityDetails
 	 * @throws IOException
 	 */
 	public static CharityDetails getCharityDetails(String token, String regNum) throws IOException{
-		verifyToken(token);
 		CharityDetails details = null ;
+		GiveAPI error = verifyToken(token);
+
+		if(error.getStatus_code() != null && !error.getStatus_code().equals("100")){
+			details = new CharityDetails();
+			details.setError(error);
+			return details;
+		}
 		
 		if(regNum == null || regNum.equals("")){
 			details = new CharityDetails();
@@ -368,25 +395,33 @@ public class ParseData {
 	
 	/**
 	 * Returns financial details of a specific charity
-	 * If no results are found or an error occurs, the method will return null
-	 * @param token
-	 * @param regNum
+	 * If proper parameters are not entered the method will return an error in a list of object of type FinancialData. Always check first element in the list for an error.
+	 * The error message which is encapsulated in the object (FinancialData) should always be checked after calling this method.
+	 * If the error is 100 = it means the retrieval was successful otherwise an error occurred.
+	 * @param String token
+	 * @param String regNum
 	 * @return List<FinancialData>
 	 * @throws IOException
 	 */
 	public static List<FinancialData> getFinancialDetails(String token, String regNum) throws IOException{
-		verifyToken(token);
 		List<FinancialData> details= null;
+		List<FinancialData> errorList=new ArrayList<FinancialData>();
+		FinancialData fd = new FinancialData();
+		GiveAPI error = verifyToken(token);
+
+		if(error.getStatus_code() != null && !error.getStatus_code().equals("100")){
+			fd.setError(error);
+			errorList.add(fd);
+			return errorList;
+		}
 		
 		if(regNum == null || regNum.equals("")){
-			details = new ArrayList<FinancialData>();
 			GiveAPI give = new GiveAPI();
-			FinancialData fd = new FinancialData();
 			give.setstatus_code("204");
 			give.setStatus_code_description("Please enter a registration number.");
 			fd.setError(give);
-			details.add(fd);
-			return details;
+			errorList.add(fd);
+			return errorList;
 		}
 		
 		String url = "https://app.place2give.com/Service.svc/give-api?action=getFinancialDetails&token="+token+"&regNum="+regNum+"&format=json";
@@ -409,7 +444,6 @@ public class ParseData {
 			new Exception("Error\nStatus code: "+checkResults.getStatus_code()+"-"+checkResults.getStatus_code_description());
 			
 			details = new ArrayList<FinancialData>();
-			FinancialData fd = new FinancialData();
 			fd.setError(checkResults);
 			details.add(fd);
 		}
@@ -419,15 +453,28 @@ public class ParseData {
 	
 	/**
 	 * Returns a list of available charity types
-	 * @param token
+	 * If proper parameters are not entered the method will return an error in a list of object of type CharityType. Always check first element in the list for an error.
+	 * The error message which is encapsulated in the object (CharityType) should always be checked after calling this method.
+	 * If the error is 100 = it means the retrieval was successful otherwise an error occurred.
+	 * @param String token
 	 * @return List<CharityType>
 	 * @throws IOException
 	 */
 	public static List<CharityType> getCharityType(String token) throws IOException{
-		verifyToken(token);
+		List<CharityType> details =null;
+		
+		GiveAPI error = verifyToken(token);
+		
+		if(error.getStatus_code() != null && !error.getStatus_code().equals("100")){
+			details = new ArrayList<CharityType>();
+			CharityType ct = new CharityType();
+			ct.setError(error);
+			details.add(ct);
+			return details;
+		}
+		
 		String url = "https://app.place2give.com/Service.svc/give-api?action=getCharityTypes&token="+token+"&format=json";
 		String reader = readURL_GET(url);
-		List<CharityType> details =null;
 		
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.setSerializationInclusion(Include.NON_NULL);
@@ -455,24 +502,34 @@ public class ParseData {
 	
 	/**
 	 * Returns a list of provinces or states according to the country entered.
-	 * @param token
-	 * @param country
+	 * If proper parameters are not entered the method will return an error in a list of object of type ProvState. Always check first element in the list for an error.
+	 * The error message which is encapsulated in the object (ProvState) should always be checked after calling this method.
+	 * If the error is 100 = it means the retrieval was successful otherwise an error occurred.
+	 * @param String token
+	 * @param String country
 	 * @return List<ProvState>
 	 * @throws IOException
 	 */
 	public static List<ProvState> getProvState(String token, String country) throws IOException{
-		verifyToken(token);
 		List<ProvState> details = null;
 		
+		List<ProvState> errorList=new ArrayList<ProvState>();
+		GiveAPI give = new GiveAPI();
+		ProvState p = new ProvState();
+		GiveAPI error = verifyToken(token);
+
+		if(error.getStatus_code() != null && !error.getStatus_code().equals("100")){
+			p.setError(error);
+			errorList.add(p);
+			return errorList;
+		}
+		
 		if(country == null || country.equals("")){
-			details = new ArrayList<ProvState>();
-			ProvState p = new ProvState();
-			GiveAPI give = new GiveAPI();
 			give.setstatus_code("204");
 			give.setStatus_code_description("Please enter the parameter country.");
 			p.setError(give);
-			details.add(p);
-			return details;
+			errorList.add(p);
+			return errorList;
 		}
 		
 		country = country.toUpperCase();
@@ -480,14 +537,11 @@ public class ParseData {
 		try{
 			c = CountryEnum.valueOf(country);
 		}catch(IllegalArgumentException e){
-			details = new ArrayList<ProvState>();
-			ProvState p = new ProvState();
-			GiveAPI give = new GiveAPI();
 			give.setstatus_code("204");
 			give.setStatus_code_description("Invalid country, please enter the correct ID of the country.");
 			p.setError(give);
-			details.add(p);
-			return details;
+			errorList.add(p);
+			return errorList;
 		}
 		
 		String url = "https://app.place2give.com/Service.svc/give-api?action=getProvState&token="+token+"&Country="+country+"&format=json";
@@ -512,7 +566,6 @@ public class ParseData {
 			new Exception("Error\nStatus code: "+checkResults.getStatus_code()+"-"+checkResults.getStatus_code_description());
 			
 			details = new ArrayList<ProvState>();
-			ProvState p = new ProvState();
 			p.setError(checkResults);
 			details.add(p);
 			
@@ -526,24 +579,33 @@ public class ParseData {
 	 * Must enter one of the values for charity size, keyword, or charity type at least.
 	 * Entering values for country and provState are optional
 	 * All other values that are not set, should be set as null or empty string. 
-	 * If no results are found or an error occurs, the method will return null
-	 * @param token
-	 * @param PageNumber
-	 * @param NumPerPage
-	 * @param CharitySize
-	 * @param keyword
-	 * @param CharityType
-	 * @param Country
-	 * @param ProvState
+	 * If proper parameters are not entered the method will return an error in a list of object of type SearchCharities. Always check first element in the list for an error.
+	 * The error message which is encapsulated in the object (SearchCharities) should always be checked after calling this method.
+	 * If the error is 100 = it means the retrieval was successful otherwise an error occurred.
+	 * @param String token
+	 * @param String PageNumber
+	 * @param String NumPerPage
+	 * @param String CharitySize
+	 * @param String keyword
+	 * @param String CharityType
+	 * @param String Country
+	 * @param String ProvState
 	 * @return List<SearchCharities>
 	 * @throws IOException
 	 */
 	public static List<SearchCharities> searchCharities(String token, String PageNumber, String NumPerPage, String CharitySize, String keyword, String CharityType,String Country, String ProvState) throws IOException{
-		verifyToken(token);
 		List<SearchCharities> details=null;
 		List<SearchCharities> errors = new ArrayList<SearchCharities>();
 		SearchCharities sc = new SearchCharities();
 		GiveAPI give = new GiveAPI();
+		
+		GiveAPI tokenError = verifyToken(token);
+
+		if(tokenError.getStatus_code() != null && !tokenError.getStatus_code().equals("100")){
+			sc.setError(tokenError);
+			errors.add(sc);
+			return errors;
+		}
 		
 		if((PageNumber ==null) || (NumPerPage ==null) || (PageNumber =="") || (NumPerPage =="")){
 			give.setstatus_code("204");
@@ -646,24 +708,34 @@ public class ParseData {
 	/**
 	 * Return a list of charity files for a specific charity.
 	 * Enter registration number for a specific charity.
-	 * If no results are found or an error occurs, the method will return null
-	 * @param token
-	 * @param regNum
+	 * If proper parameters are not entered the method will return an error in a list of object of type CharityFiles. Always check first element in the list for an error.
+	 * The error message which is encapsulated in the object (CharityFiles) should always be checked after calling this method.
+	 * If the error is 100 = it means the retrieval was successful otherwise an error occurred.
+	 * @param String token
+	 * @param String regNum
 	 * @return List<CharityFiles>
 	 * @throws IOException
 	 */
 	public static List<CharityFiles> getCharityFiles(String token, String regNum) throws IOException{
-		verifyToken(token);
 		List<CharityFiles> details = null;
 		
+		List<CharityFiles> errors = new ArrayList<CharityFiles>();
+		CharityFiles cf = new CharityFiles();
+		GiveAPI give = new GiveAPI();
+		
+		GiveAPI tokenError = verifyToken(token);
+
+		if(tokenError.getStatus_code() != null && !tokenError.getStatus_code().equals("100")){
+			cf.setError(tokenError);
+			errors.add(cf);
+			return errors;
+		}
+		
 		if(regNum == null || regNum.equals("")){
-			details = new ArrayList<CharityFiles>();
-			GiveAPI give = new GiveAPI();
-			CharityFiles cf = new CharityFiles();
 			give.setstatus_code("204");
 			give.setStatus_code_description("Please enter a registration number.");
 			cf.setError(give);
-			details.add(cf);
+			errors.add(cf);
 			return details;
 		}
 		
@@ -688,9 +760,8 @@ public class ParseData {
 			new Exception("Error\nStatus code: "+checkResults.getStatus_code()+"-"+checkResults.getStatus_code_description());
 			
 			details = new ArrayList<CharityFiles>();
-			CharityFiles sc = new CharityFiles();
-			sc.setError(checkResults);
-			details.add(sc);
+			cf.setError(checkResults);
+			details.add(cf);
 		}
 		
 		return details;
@@ -699,25 +770,35 @@ public class ParseData {
 	/**
 	 * Returns a list of project information that are specific to a certain charity
 	 * Must enter registration number for a specific charity
-	 * If no results are found or an error occurs, the method will return null
-	 * @param token
-	 * @param regNum
+	 * If proper parameters are not entered the method will return an error in a list of object of type CharityProjects. Always check first element in the list for an error.
+	 * The error message which is encapsulated in the object (CharityProjects) should always be checked after calling this method.
+	 * If the error is 100 = it means the retrieval was successful otherwise an error occurred.
+	 * @param String token
+	 * @param String regNum
 	 * @return List<CharityProjects>
 	 * @throws IOException
 	 */
 	public static List<CharityProjects> getCharityProjects(String token, String regNum) throws IOException{
-		verifyToken(token);
 		List<CharityProjects> details = null ;
 		
+		List<CharityProjects> errors = new ArrayList<CharityProjects>();
+		CharityProjects cp = new CharityProjects();
+		GiveAPI give = new GiveAPI();
+		
+		GiveAPI tokenError = verifyToken(token);
+
+		if(tokenError.getStatus_code() != null && !tokenError.getStatus_code().equals("100")){
+			cp.setError(tokenError);
+			errors.add(cp);
+			return errors;
+		}
+		
 		if(regNum == null || regNum.equals("")){
-			details = new ArrayList<CharityProjects>();
-			GiveAPI give = new GiveAPI();
-			CharityProjects cp = new CharityProjects();
 			give.setstatus_code("204");
 			give.setStatus_code_description("Please enter a registration number.");
 			cp.setError(give);
-			details.add(cp);
-			return details;
+			errors.add(cp);
+			return errors;
 		}
 		
 		String url = "https://app.place2give.com/Service.svc/give-api?action=getCharityProjects&token="+token+"&regNum="+regNum+"&format=json";
@@ -751,34 +832,42 @@ public class ParseData {
 	/**
 	 * Returns an object of type DonationURL that contains the expiration date and the donationURL.
 	 * The donation URL is a unique URL that allows users the ability to make one-time donation
-	 * If all required parameters are not filled then the method will return null. 
+	 * If proper parameters are not entered the method will return an error in object of type DonationURL.
+	 * The error message which is encapsulated in the object (DonationURL) should always be checked after calling this method.
+	 * If the error is 100 = it means the retrieval was successful, otherwise an error occurred.
 	 * @param String token
-	 * @param Info obj
+	 * @param Object of type Info obj
 	 * @return object of type DonationURL
 	 * @throws IOException
 	 */
 	public static DonationURL getDonationURL(String token, Info obj) throws IOException{
-		verifyToken(token);
-		String url="https://app.place2give.com/Service.svc/give-api?action=getDonationURL&token="+token;
+		
 		DonationURL details = null ;
+		DonationURL errors = new DonationURL();
+		GiveAPI give = new GiveAPI();
+		
+		GiveAPI tokenError = verifyToken(token);
+
+		if(tokenError.getStatus_code() != null && !tokenError.getStatus_code().equals("100")){
+			errors.setError(tokenError);
+			return errors;
+		}
+		
+		String url="https://app.place2give.com/Service.svc/give-api?action=getDonationURL&token="+token;
 		
 		if(obj.getRegNum() == null || obj.getProjectType() ==null || obj.getBackURL() == null || obj.getRedirectURL() == null || obj.getCurrency() == null || obj.getAmount() == null){
 			System.out.println("One of the parameters were not specefied. Please read the documentation.");
-			details = new DonationURL();
-			GiveAPI give = new GiveAPI();
 			give.setstatus_code("204");
 			give.setStatus_code_description("Invalid parameters, please enter the correct the correct parameters");
-			details.setError(give);
-			return details;
+			errors.setError(give);
+			return errors;
 		}else if(obj.getIsAnonymous() == false){
 			if(obj.getFirstName() == null || obj.getLastName() == null || obj.getEmail() == null || obj.getAddress()== null || obj.getPostalZip() == null || obj.getProvState()==null || obj.getCity()==null || obj.getCountry()==null){
 				System.out.println("One of the parameters for donor info was not specified. Please check the documentation.");
-				details = new DonationURL();
-				GiveAPI give = new GiveAPI();
 				give.setstatus_code("204");
 				give.setStatus_code_description("Invalid parameters, please enter the correct parameters.");
-				details.setError(give);
-				return details;
+				errors.setError(give);
+				return errors;
 			}
 		}else{
 			String projectType = obj.getProjectType().toUpperCase();
@@ -792,12 +881,10 @@ public class ParseData {
 					c = CountryEnum.valueOf(country);
 				}
 			}catch(IllegalArgumentException e){
-				details = new DonationURL();
-				GiveAPI give = new GiveAPI();
 				give.setstatus_code("204");
 				give.setStatus_code_description("Invalid projectType or country, please enter the correct ID for project type (C or P).");
-				details.setError(give);
-				return details;
+				errors.setError(give);
+				return errors;
 			}
 			
 			if(obj.getClientfee() == null)
