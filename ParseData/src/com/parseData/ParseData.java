@@ -817,14 +817,14 @@ public class ParseData {
 		
 		String url="https://app.place2give.com/Service.svc/give-api?action=getDonationURL&token="+token;
 		
-		if(obj.getRegNum() == null || obj.getProjectType() ==null || obj.getBackURL() == null || obj.getRedirectURL() == null || obj.getCurrency() == null || obj.getAmount() == null){
+		if(obj.getRegNum() == null || obj.getProjectType() ==null || obj.getBackURL() == null || obj.getRedirectURL() == null || obj.getCurrency() == null || obj.getAmount() == null || obj.getRegNum().equals("") || obj.getProjectType().equals("") || obj.getBackURL().equals("") || obj.getRedirectURL().equals("") || obj.getCurrency().equals("") || obj.getAmount().equals("")){
 			System.out.println("One of the parameters were not specefied. Please read the documentation.");
 			give.setstatus_code("204");
 			give.setStatus_code_description("Invalid parameters, please enter the correct the correct parameters");
 			errors.setError(give);
 			return errors;
 		}else if(obj.getIsAnonymous() == false){
-			if(obj.getFirstName() == null || obj.getLastName() == null || obj.getEmail() == null || obj.getAddress()== null || obj.getPostalZip() == null || obj.getProvState()==null || obj.getCity()==null || obj.getCountry()==null){
+			if(obj.getFirstName() == null || obj.getLastName() == null || obj.getEmail() == null || obj.getAddress()== null || obj.getPostalZip() == null || obj.getProvState()==null || obj.getCity()==null || obj.getCountry()==null || obj.getFirstName().equals("") || obj.getLastName().equals("") || obj.getEmail().equals("") || obj.getAddress().equals("") || obj.getPostalZip().equals("") || obj.getProvState().equals("") || obj.getCity().equals("") || obj.getCountry().equals("")){
 				System.out.println("One of the parameters for donor info was not specified. Please check the documentation.");
 				give.setstatus_code("204");
 				give.setStatus_code_description("Invalid parameters, please enter the correct parameters.");
@@ -852,7 +852,7 @@ public class ParseData {
 				return errors;
 			}
 			
-			if(obj.getClientfee() == null)
+			if(obj.getClientfee() == null || obj.getClientfee().equals(""))
 				url += "&regNum="+obj.getRegNum()+"&ProjectType="+obj.getProjectType()+"&BackURL="+obj.getBackURL()+"&RedirectURL="+obj.getRedirectURL()+"&Amount="+obj.getAmount()+"&Currency="+obj.getCurrency()+"&IsAnonymous="+obj.getIsAnonymous()+"&FirstName="+obj.getFirstName()+"&LastName="+obj.getLastName()+"&Address="+obj.getAddress()+"&City="+obj.getCity()+"&ProvState="+obj.getProvState()+"&Country="+obj.getCountry()+"&PostalZip="+obj.getPostalZip()+"&Email="+obj.getEmail()
 					+"&Note="+obj.getNote()+"&InHonourOf="+obj.getInHonourOf()+"&InMemorialOf="+obj.getInMemorialOf()+"&format=json";
 			else
