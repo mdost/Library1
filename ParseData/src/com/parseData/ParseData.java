@@ -86,6 +86,7 @@ public class ParseData {
 				token = node.get("give-api").get("data").get("token").asText();
 			}else{
 				System.out.println(checkResults.getStatus_code_description());
+				token = checkResults.getStatus_code() +" - "+checkResults.getStatus_code_description();
 			}
 			
 		} catch (IOException e) {
