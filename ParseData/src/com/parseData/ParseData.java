@@ -70,7 +70,7 @@ public class ParseData {
 		
 		called = true;
 		
-		String url = "https://app.place2give.com/Service.svc/give-api-auth?app_id=dc669d4e-08ee-4455-a253-ba233be22ba7&app_secret=c0440e81-8596-4b3c-af3a-aa73a6eb0e4e&format=json";
+		String url = "https://app.place2give.com/Service.svc/give-api-auth?app_id="+appid+"&app_secret="+appsecret+"&format=json";
 		String token = null;
 		
 		try {
@@ -88,7 +88,7 @@ public class ParseData {
 				System.out.println(checkResults.getStatus_code_description());
 				token = checkResults.getStatus_code() +" - "+checkResults.getStatus_code_description();
 			}
-			
+	
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -164,6 +164,8 @@ public class ParseData {
 			}
 				
 			output = buffer.toString();
+			
+			read.close();
 		}
 		
 		return output;
@@ -197,6 +199,7 @@ public class ParseData {
 		}
 		
 		String output = buffer.toString();
+		read.close();
 		
 		return output;
 	}
@@ -217,7 +220,8 @@ public class ParseData {
 		}
 		
 		InputStream output = connect.getInputStream();
-				
+		output.close();
+		
 		return output;
 	}
 	
@@ -252,6 +256,7 @@ public class ParseData {
 		}
 		
 		inReader = connection.getInputStream();
+		wr.close();
 		
 		return inReader;
 	}
