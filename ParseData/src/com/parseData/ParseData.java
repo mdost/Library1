@@ -57,6 +57,15 @@ public class ParseData {
 	};
 	
 	/**
+	 * Returns the value of the variable called. If true-means the getToken was called and successfully retrieved info. 
+	 * Otherwise the call was unsuccessful, call getToken again. 
+	 * @return boolean
+	 */
+	public boolean isCalled(){
+		return called;
+	}
+	
+	/**
 	 * Returns the token for a specific APPID and APPSecret.
 	 * Will only be called once on startup, it will provide the token, the user must save that token for further usage. 
 	 * If called again, the method will return null.
