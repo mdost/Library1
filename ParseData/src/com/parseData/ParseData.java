@@ -68,8 +68,6 @@ public class ParseData {
 		if(called)
 			return null;
 		
-		called = true;
-		
 		String url = "https://app.place2give.com/Service.svc/give-api-auth?app_id="+appid+"&app_secret="+appsecret+"&format=json";
 		String token = null;
 		
@@ -84,9 +82,11 @@ public class ParseData {
 			
 			if(checkResults.getStatus_code_description().contains("Success") || checkResults.getStatus_code().contains("100")){
 				token = node.get("give-api").get("data").get("token").asText();
+				called = true;
 			}else{
 				System.out.println(checkResults.getStatus_code_description());
 				token = checkResults.getStatus_code() +" - "+checkResults.getStatus_code_description();
+				called=false;
 			}
 	
 		} catch (IOException e) {
