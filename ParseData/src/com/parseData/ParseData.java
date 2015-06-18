@@ -585,7 +585,7 @@ public class ParseData {
 			return errors;
 		}
 		
-		if((PageNumber ==null) || (NumPerPage ==null) || (PageNumber =="") || (NumPerPage =="")){
+		if((PageNumber ==null) || (NumPerPage ==null) || (PageNumber.equals("")) || (NumPerPage.equals(""))){
 			give.setstatus_code("204");
 			give.setStatus_code_description("Please enter the page number and number per page.");
 			sc.setError(give);
@@ -600,7 +600,7 @@ public class ParseData {
 		}
 		
 		String url ="https://app.place2give.com/Service.svc/give-api?action=searchCharities&token="+token+"&PageNumber="+PageNumber+"&NumPerPage="+NumPerPage;
-		if(CharitySize != null && CharitySize != ""){
+		if(CharitySize != null && !CharitySize.equals("")){
 			String size = CharitySize.toUpperCase();
 			CharitySizeEnum cse;
 			try{
@@ -619,11 +619,11 @@ public class ParseData {
 			}
 			url+= "&CharitySize="+CharitySize.toUpperCase();
 		}
-		if(keyword != null && keyword != "")
+		if(keyword != null && !keyword.equals(""))
 			url+= "&keyword="+keyword;
-		if(CharityType != null && CharityType != "")
+		if(CharityType != null && !CharityType.equals(""))
 			url+= "&CharityType="+CharityType;
-		if(Country != null && Country != ""){
+		if(Country != null && !Country.equals("")){
 			Country = Country.toUpperCase();
 			CountryEnum ce;
 			try{
@@ -637,11 +637,11 @@ public class ParseData {
 			}
 			url+= "&Country="+Country;
 		}
-		if(ProvState != null && ProvState != "")
+		if(ProvState != null && !ProvState.equals(""))
 			url+= "&ProvState="+ProvState;
 		
 		url +="&format=json";
-		
+
 		String reader = readURL_GET(url);
 		
 		ObjectMapper mapper = new ObjectMapper();
