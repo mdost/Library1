@@ -856,7 +856,7 @@ public class ParseData {
 				pt = ProjectType.valueOf(projectType);
 				ce = CurrencyEnum.valueOf(currency);
 				
-				if(obj.getCountry() != null && obj.getCountry() != ""){
+				if(obj.getCountry() != null && !obj.getCountry().equals("")){
 					String country = obj.getCountry().toUpperCase();
 					c = CountryEnum.valueOf(country);
 				}
