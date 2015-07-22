@@ -819,7 +819,7 @@ public class ParseData {
 	 * @throws IOException
 	 */
 	public static DonationURL getDonationURL(String token, Info obj) throws IOException{
-		DonationURL details = null ;
+		DonationURL details =null ;
 		DonationURL errors = new DonationURL();
 		GiveAPI give = new GiveAPI();
 		
@@ -838,20 +838,20 @@ public class ParseData {
 			give.setStatus_code_description("Invalid parameters, please enter the required the parameters");
 			errors.setError(give);
 			return errors;
-		}else if(obj.getIsAnonymous() == false){
-			if(obj.getFirstName() == null || obj.getLastName() == null || obj.getEmail() == null || obj.getAddress()== null || obj.getPostalZip() == null || obj.getProvState()==null || obj.getCity()==null || obj.getCountry()==null || obj.getFirstName().equals("") || obj.getLastName().equals("") || obj.getEmail().equals("") || obj.getAddress().equals("") || obj.getPostalZip().equals("") || obj.getProvState().equals("") || obj.getCity().equals("") || obj.getCountry().equals("")){
+		}else if(obj.getIsAnonymous() == false && (obj.getFirstName() == null || obj.getLastName() == null || obj.getEmail() == null || obj.getAddress()== null || obj.getPostalZip() == null || obj.getProvState()==null || obj.getCity()==null || obj.getCountry()==null || obj.getFirstName().equals("") || obj.getLastName().equals("") || obj.getEmail().equals("") || obj.getAddress().equals("") || obj.getPostalZip().equals("") || obj.getProvState().equals("") || obj.getCity().equals("") || obj.getCountry().equals(""))){
 				System.out.println("One of the parameters for donor info was not specified. Please check the documentation.");
 				give.setstatus_code("204");
 				give.setStatus_code_description("Invalid parameters, please enter personal information since the donation is not anonymous.");
 				errors.setError(give);
 				return errors;
-			}
+			
 		}else{
 			String projectType = obj.getProjectType().toUpperCase();
 			String currency = obj.getCurrency().toUpperCase();
 			ProjectType pt;
 			CountryEnum c;
 			CurrencyEnum ce;
+			
 			try{
 				pt = ProjectType.valueOf(projectType);
 				ce = CurrencyEnum.valueOf(currency);
@@ -873,7 +873,6 @@ public class ParseData {
 			else
 				url += "&regNum="+obj.getRegNum()+"&ProjectType="+obj.getProjectType()+"&BackURL="+obj.getBackURL()+"&RedirectURL="+obj.getRedirectURL()+"&Amount="+obj.getAmount()+"&Currency="+obj.getCurrency()+"&IsAnonymous="+obj.getIsAnonymous()+"&FirstName="+obj.getFirstName()+"&LastName="+obj.getLastName()+"&Address="+obj.getAddress()+"&City="+obj.getCity()+"&ProvState="+obj.getProvState()+"&Country="+obj.getCountry()+"&PostalZip="+obj.getPostalZip()+"&Email="+obj.getEmail()
 				+"&Note="+obj.getNote()+"&InHonourOf="+obj.getInHonourOf()+"&InMemorialOf="+obj.getInMemorialOf()+"&Clientfee="+obj.getClientfee()+"&format=json";
-		
 		}
 		
 		String reader = readURL_GET(url);
@@ -886,6 +885,7 @@ public class ParseData {
 		if(checkResults.getStatus_code_description().equalsIgnoreCase("Success") || checkResults.getStatus_code().equals("100")){
 			details = mapper.readValue(node.get("give-api").get("data").toString(), DonationURL.class);
 			details.setError(checkResults);
+
 		}else{
 			System.out.println(checkResults.getStatus_code_description());
 			new Exception("Error\nStatus code: "+checkResults.getStatus_code()+"-"+checkResults.getStatus_code_description());
