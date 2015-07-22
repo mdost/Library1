@@ -532,7 +532,6 @@ public class ParseData {
 		GiveAPI checkResults = mapper.readValue(node.get("give-api").toString(), GiveAPI.class);
 		
 		if(c != null){
-			System.out.println("correct country inpu");
 			if(checkResults.getStatus_code_description().equalsIgnoreCase("Success") || checkResults.getStatus_code().equals("100")){
 				details = mapper.readValue(node.get("give-api").get("data").get("proveStates").get("provState").toString(), typeFactory.constructCollectionType(List.class, ProvState.class));
 				for(int i=0; i<details.size(); i++){
