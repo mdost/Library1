@@ -293,7 +293,7 @@ public class ParseData {
 		
 		if(regNum == null || regNum == ""){
 			data = new SalaryData();
-			give.setstatus_code("902");
+			give.setstatus_code("102");
 			give.setStatus_code_description("Please enter a registration number.");
 			data.setError(give);
 			return data;
@@ -345,7 +345,7 @@ public class ParseData {
 		if(regNum == null || regNum.equals("")){
 			details = new CharityDetails();
 			GiveAPI give = new GiveAPI();
-			give.setstatus_code("902");
+			give.setstatus_code("102");
 			give.setStatus_code_description("Please enter a registration number.");
 			details.setError(give);
 			return details;
@@ -395,7 +395,7 @@ public class ParseData {
 		
 		if(regNum == null || regNum.equals("")){
 			GiveAPI give = new GiveAPI();
-			give.setstatus_code("902");
+			give.setstatus_code("102");
 			give.setStatus_code_description("Please enter a registration number.");
 			fd.setError(give);
 			errorList.add(fd);
@@ -503,7 +503,7 @@ public class ParseData {
 		}
 		
 		if(country == null || country.equals("")){
-			give.setstatus_code("902");
+			give.setstatus_code("204");
 			give.setStatus_code_description("Please enter the parameter country.");
 			p.setError(give);
 			errorList.add(p);
@@ -515,7 +515,7 @@ public class ParseData {
 		try{
 			c = CountryEnum.valueOf(country);
 		}catch(IllegalArgumentException e){
-			give.setstatus_code("902");
+			give.setstatus_code("204");
 			give.setStatus_code_description("Invalid country, please enter the correct ID of the country.");
 			p.setError(give);
 			errorList.add(p);
@@ -610,7 +610,7 @@ public class ParseData {
 				}
 				cse = CharitySizeEnum.valueOf(size);
 			}catch(IllegalArgumentException e){
-				give.setstatus_code("902");
+				give.setstatus_code("203");
 				give.setStatus_code_description("Invalid charity size, please enter the correct charity size.");
 				sc.setError(give);
 				errors.add(sc);
@@ -628,7 +628,7 @@ public class ParseData {
 			try{
 				ce = CountryEnum.valueOf(Country);
 			}catch(IllegalArgumentException e){
-				give.setstatus_code("902");
+				give.setstatus_code("204");
 				give.setStatus_code_description("Invalid country, please enter the correct ID for country.");
 				sc.setError(give);
 				errors.add(sc);
@@ -709,7 +709,7 @@ public class ParseData {
 		}
 		
 		if(regNum == null || regNum.equals("")){
-			give.setstatus_code("902");
+			give.setstatus_code("102");
 			give.setStatus_code_description("Please enter a registration number.");
 			cf.setError(give);
 			errors.add(cf);
@@ -771,7 +771,7 @@ public class ParseData {
 		}
 		
 		if(regNum == null || regNum.equals("")){
-			give.setstatus_code("902");
+			give.setstatus_code("102");
 			give.setStatus_code_description("Please enter a registration number.");
 			cp.setError(give);
 			errors.add(cp);
