@@ -118,11 +118,11 @@ public class ParseData {
 	private static GiveAPI verifyToken(String token) throws IOException{
 		GiveAPI error = new GiveAPI();		
 		if(called = false){
-			error.setstatus_code("204");
+			error.setstatus_code("902");
 			error.setStatus_code_description("Please get token by calling getToken(appid, appsecret)");
 			System.exit(0);;
 		}else if(token == null || token.contains(" ") || token.length() != 36){
-			error.setstatus_code("204");
+			error.setstatus_code("902");
 			error.setStatus_code_description("The token entered was invalid");
 		}
 		return error;
@@ -293,7 +293,7 @@ public class ParseData {
 		
 		if(regNum == null || regNum == ""){
 			data = new SalaryData();
-			give.setstatus_code("204");
+			give.setstatus_code("902");
 			give.setStatus_code_description("Please enter a registration number.");
 			data.setError(give);
 			return data;
@@ -345,7 +345,7 @@ public class ParseData {
 		if(regNum == null || regNum.equals("")){
 			details = new CharityDetails();
 			GiveAPI give = new GiveAPI();
-			give.setstatus_code("204");
+			give.setstatus_code("902");
 			give.setStatus_code_description("Please enter a registration number.");
 			details.setError(give);
 			return details;
@@ -395,7 +395,7 @@ public class ParseData {
 		
 		if(regNum == null || regNum.equals("")){
 			GiveAPI give = new GiveAPI();
-			give.setstatus_code("204");
+			give.setstatus_code("902");
 			give.setStatus_code_description("Please enter a registration number.");
 			fd.setError(give);
 			errorList.add(fd);
@@ -503,7 +503,7 @@ public class ParseData {
 		}
 		
 		if(country == null || country.equals("")){
-			give.setstatus_code("204");
+			give.setstatus_code("902");
 			give.setStatus_code_description("Please enter the parameter country.");
 			p.setError(give);
 			errorList.add(p);
@@ -515,7 +515,7 @@ public class ParseData {
 		try{
 			c = CountryEnum.valueOf(country);
 		}catch(IllegalArgumentException e){
-			give.setstatus_code("204");
+			give.setstatus_code("902");
 			give.setStatus_code_description("Invalid country, please enter the correct ID of the country.");
 			p.setError(give);
 			errorList.add(p);
@@ -585,13 +585,13 @@ public class ParseData {
 		}
 		
 		if((PageNumber ==null) || (NumPerPage ==null) || (PageNumber.equals("")) || (NumPerPage.equals(""))){
-			give.setstatus_code("204");
+			give.setstatus_code("902");
 			give.setStatus_code_description("Please enter the page number and number per page.");
 			sc.setError(give);
 			errors.add(sc);
 			return errors;
 		} else if((CharitySize ==null) && (keyword ==null) && (CharityType ==null) || (CharitySize.equals("")) && (keyword.equals("")) && (CharityType.equals(""))){
-			give.setstatus_code("204");
+			give.setstatus_code("902");
 			give.setStatus_code_description("Please enter one of the following parameters charity size, charity type, or keyword");
 			sc.setError(give);
 			errors.add(sc);
@@ -610,7 +610,7 @@ public class ParseData {
 				}
 				cse = CharitySizeEnum.valueOf(size);
 			}catch(IllegalArgumentException e){
-				give.setstatus_code("204");
+				give.setstatus_code("902");
 				give.setStatus_code_description("Invalid charity size, please enter the correct charity size.");
 				sc.setError(give);
 				errors.add(sc);
@@ -628,7 +628,7 @@ public class ParseData {
 			try{
 				ce = CountryEnum.valueOf(Country);
 			}catch(IllegalArgumentException e){
-				give.setstatus_code("204");
+				give.setstatus_code("902");
 				give.setStatus_code_description("Invalid country, please enter the correct ID for country.");
 				sc.setError(give);
 				errors.add(sc);
@@ -661,7 +661,7 @@ public class ParseData {
 					i.setError(checkResults);
 				}
 			}else{
-				give.setstatus_code("200");
+				give.setstatus_code("101");
 				give.setStatus_code_description("No results found for charities");
 				sc.setError(give);
 				sc.setTotalPages(dsc.getTotalPages());
@@ -709,7 +709,7 @@ public class ParseData {
 		}
 		
 		if(regNum == null || regNum.equals("")){
-			give.setstatus_code("204");
+			give.setstatus_code("902");
 			give.setStatus_code_description("Please enter a registration number.");
 			cf.setError(give);
 			errors.add(cf);
@@ -771,7 +771,7 @@ public class ParseData {
 		}
 		
 		if(regNum == null || regNum.equals("")){
-			give.setstatus_code("204");
+			give.setstatus_code("902");
 			give.setStatus_code_description("Please enter a registration number.");
 			cp.setError(give);
 			errors.add(cp);
@@ -833,13 +833,13 @@ public class ParseData {
 		
 		if(obj.getRegNum() == null || obj.getProjectType() ==null || obj.getBackURL() == null || obj.getRedirectURL() == null || obj.getCurrency() == null || obj.getAmount() == null || obj.getRegNum().equals("") || obj.getProjectType().equals("") || obj.getBackURL().equals("") || obj.getRedirectURL().equals("") || obj.getCurrency().equals("") || obj.getAmount().equals("")){
 			System.out.println("One of the parameters were not specefied. Please read the documentation.");
-			give.setstatus_code("204");
+			give.setstatus_code("902");
 			give.setStatus_code_description("Invalid parameters, please enter the required the parameters");
 			errors.setError(give);
 			return errors;
 		}else if(obj.getIsAnonymous() == false && (obj.getFirstName() == null || obj.getLastName() == null || obj.getEmail() == null || obj.getAddress()== null || obj.getPostalZip() == null || obj.getProvState()==null || obj.getCity()==null || obj.getCountry()==null || obj.getFirstName().equals("") || obj.getLastName().equals("") || obj.getEmail().equals("") || obj.getAddress().equals("") || obj.getPostalZip().equals("") || obj.getProvState().equals("") || obj.getCity().equals("") || obj.getCountry().equals(""))){
 				System.out.println("One of the parameters for donor info was not specified. Please check the documentation.");
-				give.setstatus_code("204");
+				give.setstatus_code("902");
 				give.setStatus_code_description("Invalid parameters, please enter personal information since the donation is not anonymous.");
 				errors.setError(give);
 				return errors;
@@ -860,7 +860,7 @@ public class ParseData {
 					c = CountryEnum.valueOf(country);
 				}
 			}catch(IllegalArgumentException e){
-				give.setstatus_code("204");
+				give.setstatus_code("902");
 				give.setStatus_code_description("Invalid projectType, currency, or country, please enter the correct parameters.");
 				errors.setError(give);
 				return errors;
