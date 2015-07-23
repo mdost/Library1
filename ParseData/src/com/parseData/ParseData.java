@@ -122,7 +122,7 @@ public class ParseData {
 			error.setStatus_code_description("Please get token by calling getToken(appid, appsecret)");
 			System.exit(0);;
 		}else if(token == null || token.contains(" ") || token.length() != 36){
-			error.setstatus_code("902");
+			error.setstatus_code("901");
 			error.setStatus_code_description("The token entered was invalid");
 		}
 		return error;
